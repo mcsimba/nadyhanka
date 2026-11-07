@@ -68,7 +68,7 @@
       '<div class="wrap">' +
       '<section class="hero"><h1>10 питань людям, <span class="nowrap">що <span class="mark">надихають' +
       '<svg class="mark__crown"><use href="#crown"/></svg><svg class="mark__line"><use href="#scribble"/></svg></span></span></h1>' +
-      "<p>Люди з української маркетингової і креативної індустрії розповідають про книги, звички, рішення і те, що повертає їм енергію.</p></section>" +
+      "<p>Люди з маркетингової та креативної індустрій України розповідають про книги, звички, рішення і те, що повертає їм енергію.</p></section>" +
       '<div class="toolbar"><div class="count"><b>' + G.length + "</b>" + plural(G.length, "надиханка", "надиханки", "надиханок") + "</div>" +
       '<label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
       '<input type="search" placeholder="Пошук за іменем або сферою" aria-label="Пошук" value="' + esc(query) + '"></label></div>' +
