@@ -2,6 +2,12 @@
   "use strict";
 
   var DATA = window.NADYHANKY || { questions: [], guests: [] };
+  // На сервері сторінка гостя живе за адресою /g/<slug>/ (див. route), тож відносні
+  // шляхи до картинок треба рахувати від кореня сайту. Локально (file://) лишаємо як є.
+  var WEB = /^https?:$/.test(location.protocol);
+  if (WEB) (DATA.guests || []).forEach(function (g) {
+    if (g.cover && !/^(\/|https?:)/.test(g.cover)) g.cover = "/" + g.cover;
+  });
   var Q = DATA.questions;
   var G = DATA.guests; // відсортовані від нових до старих
   var app = document.getElementById("app");
@@ -274,9 +280,20 @@
   // Адреси — прості #назви, щоб посилання на розділ працювали будь-де:
   // #guests, #g-maksym-lesniak, #g-maksym-lesniak-q3, #questions, #q-3, #about, #me
   var lastPage = "";
+  // Сторінка гостя має «справжню» адресу /g/<slug>/ — саме її копіюють і шерять.
+  // За цією адресою лежить згенерована сторінка з прев'ю (обкладинка, ім'я) для
+  // Telegram і соцмереж, яка одразу відкриває сайт на #g-<slug>.
   function route() {
     var hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+    var pm = location.pathname.match(/^\/g\/([^\/]+)\/?$/);
+    if (pm && (!hash || /^q\d+$/.test(hash))) hash = "g-" + pm[1] + (hash ? "-" + hash : "");
     var m;
+    if (WEB) {
+      var gm = hash.match(/^g-(.+?)(?:-q(\d+))?$/);
+      var want = gm ? "/g/" + gm[1] + "/" + (gm[2] ? "#q" + gm[2] : "") : "/" + (hash ? "#" + hash : "");
+      want = want.replace(/(#|$)/, location.search + "$1"); // зберігаємо ?utm_… тощо
+      if (location.pathname + location.search + location.hash !== want) history.replaceState(null, "", want);
+    }
     var key = hash.replace(/-q\d+$/, "");
     var samePage = key === lastPage;
     lastPage = key;
@@ -313,6 +330,7 @@
     });
   }
 
-  window.addEventListener("hashchange", route);
+  // popstate спрацьовує і на зміну #, і на «Назад» між /g/<slug>/ та головною
+  window.addEventListener("popstate", route);
   route();
 })();
